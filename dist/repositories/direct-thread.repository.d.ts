@@ -16,7 +16,7 @@ export declare class DirectThreadRepository extends Repository {
     addUser(threadId: string | number, userIds: string[] | number[]): Promise<DirectThreadRepositoryAddUserResponseRootObject>;
     leave(threadId: string): Promise<StatusResponse>;
     hide(threadId: string): Promise<StatusResponse>;
-    markItemSeen(threadId: string, threadItemId: string): Promise<StatusResponse>;
+    markItemSeen(threadId: string, threadItemId: string): Promise<any>;
     broadcast(options: DirectThreadBroadcastOptions): Promise<DirectThreadRepositoryBroadcastResponseRootObject>;
     deleteItem(threadId: string | number, itemId: string | number): Promise<StatusResponse>;
 }

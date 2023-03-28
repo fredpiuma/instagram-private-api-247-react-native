@@ -21,6 +21,6 @@ export declare class DirectThreadEntity extends Entity {
     hide(): Promise<import("..").StatusResponse>;
     leave(): Promise<import("..").StatusResponse>;
     addUser(userIds: string[] | number[]): Promise<import("..").DirectThreadRepositoryAddUserResponseRootObject>;
-    markItemSeen(threadItemId: string): Promise<import("..").StatusResponse>;
+    markItemSeen(threadItemId: string): Promise<any>;
     private broadcast;
 }

@@ -1,5 +1,5 @@
 import { InstaSticker } from './insta-sticker';
-declare type Options = Array<{
+type Options = Array<{
     text: string;
     count: number;
 }>;

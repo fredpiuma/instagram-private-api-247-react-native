@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Request = void 0;
+const axios_1 = __importDefault(require("axios"));
 const lodash_1 = require("lodash");
 const crypto_1 = require("crypto");
 const rxjs_1 = require("rxjs");
@@ -8,7 +12,7 @@ const attempt_1 = require("@lifeomic/attempt");
 const errors_1 = require("../errors");
 const JSONbigInt = require("json-bigint");
 const JSONbigString = JSONbigInt({ storeAsString: true });
-const debug_1 = require("debug");
+const debug_1 = __importDefault(require("debug"));
 class Request {
     constructor(client) {
         this.client = client;
@@ -21,34 +25,28 @@ class Request {
     }
     static requestTransform(body, response, resolveWithFullResponse) {
         try {
-            response.body = JSONbigString.parse(body);
+            response.data = JSONbigString.parse(body);
         }
         catch (e) {
-            if ((0, lodash_1.inRange)(response.statusCode, 200, 299)) {
+            if ((0, lodash_1.inRange)(response.status, 200, 299)) {
                 throw e;
             }
         }
-        return resolveWithFullResponse ? response : response.body;
+        return resolveWithFullResponse ? response : response.data;
     }
     async send(userOptions, onlyCheckHttpStatus) {
         const options = (0, lodash_1.defaultsDeep)(userOptions, {
-            baseUrl: 'https://i.instagram.com/',
-            resolveWithFullResponse: true,
-            proxy: this.client.state.proxyUrl,
-            simple: false,
-            transform: Request.requestTransform,
-            jar: this.client.state.cookieJar,
-            strictSSL: false,
-            gzip: true,
+            baseURL: 'https://i.instagram.com/',
+            withCredentials: true,
             headers: this.getDefaultHeaders(),
             method: 'GET',
         }, this.defaults);
-        Request.requestDebug(`Requesting ${options.method} ${options.url || options.uri || '[could not find url]'}`);
+        Request.requestDebug(`Requesting ${options.method} ${options.url || options.baseURL + options.path || '[could not find url]'}`);
         const response = await this.faultTolerantRequest(options);
         this.updateState(response);
         process.nextTick(() => this.end$.next());
-        if (response.body.status === 'ok' || (onlyCheckHttpStatus && response.statusCode === 200)) {
-            return response;
+        if (response.data.status === 'ok' || (onlyCheckHttpStatus && response.status === 200)) {
+            return response.data;
         }
         const error = this.handleResponseError(response);
         process.nextTick(() => this.error$.next(error));
@@ -70,9 +68,7 @@ class Request {
         }
     }
     signature(data) {
-        return (0, crypto_1.createHmac)('sha256', this.client.state.signatureKey)
-            .update(data)
-            .digest('hex');
+        return (0, crypto_1.createHmac)('sha256', this.client.state.signatureKey).update(data).digest('hex');
     }
     sign(payload) {
         const json = typeof payload === 'object' ? JSON.stringify(payload) : payload;
@@ -86,19 +82,17 @@ class Request {
         const term = (0, lodash_1.random)(2, 3) * 1000 + size + (0, lodash_1.random)(15, 20) * 1000;
         const textChangeEventCount = Math.round(size / (0, lodash_1.random)(2, 3)) || 1;
         const data = `${size} ${term} ${textChangeEventCount} ${Date.now()}`;
-        const signature = Buffer.from((0, crypto_1.createHmac)('sha256', this.client.state.userBreadcrumbKey)
-            .update(data)
-            .digest('hex')).toString('base64');
+        const signature = Buffer.from((0, crypto_1.createHmac)('sha256', this.client.state.userBreadcrumbKey).update(data).digest('hex')).toString('base64');
         const body = Buffer.from(data).toString('base64');
         return `${signature}\n${body}\n`;
     }
     handleResponseError(response) {
-        Request.requestDebug(`Request ${response.request.method} ${response.request.uri.path} failed: ${typeof response.body === 'object' ? JSON.stringify(response.body) : response.body}`);
-        const json = response.body;
+        Request.requestDebug(`Request ${response.config.method} ${response.config.url} failed: ${typeof response.data === 'object' ? JSON.stringify(response.data) : response.data}`);
+        const json = response.data;
         if (json.spam) {
             return new errors_1.IgActionSpamError(response);
         }
-        if (response.statusCode === 404) {
+        if (response.status === 404) {
             return new errors_1.IgNotFoundError(response);
         }
         if (typeof json.message === 'string') {
@@ -126,7 +120,7 @@ class Request {
     }
     async faultTolerantRequest(options) {
         try {
-            return await (0, attempt_1.retry)(async () => fetch(options), this.attemptOptions);
+            return await (0, attempt_1.retry)(async () => (0, axios_1.default)(options), this.attemptOptions);
         }
         catch (err) {
             throw new errors_1.IgNetworkError(err);
@@ -167,6 +161,6 @@ class Request {
         };
     }
 }
-exports.Request = Request;
 Request.requestDebug = (0, debug_1.default)('ig:request');
+exports.Request = Request;
 //# sourceMappingURL=request.js.map

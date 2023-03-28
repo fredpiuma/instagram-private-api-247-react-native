@@ -7,6 +7,6 @@ export declare class LocationFeed extends Feed<LocationFeedResponse, LocationFee
     private nextPage;
     private nextMediaIds;
     protected set state(body: LocationFeedResponse);
-    request(): Promise<LocationFeedResponse>;
-    items(): Promise<LocationFeedResponseMedia[]>;
+    request(): Promise<any>;
+    items(): Promise<unknown[]>;
 }

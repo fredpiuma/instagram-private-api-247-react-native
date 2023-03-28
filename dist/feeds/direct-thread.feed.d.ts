@@ -5,6 +5,6 @@ export declare class DirectThreadFeed extends Feed<DirectThreadFeedResponse, Dir
     seqId: number;
     cursor: string;
     set state(body: DirectThreadFeedResponse);
-    request(): Promise<DirectThreadFeedResponse>;
-    items(): Promise<DirectThreadFeedResponseItemsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

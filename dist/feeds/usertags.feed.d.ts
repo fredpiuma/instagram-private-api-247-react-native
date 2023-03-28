@@ -4,6 +4,6 @@ export declare class UsertagsFeed extends Feed<UsertagsFeedResponseRootObject, U
     id: number | string;
     private nextMaxId;
     protected set state(body: UsertagsFeedResponseRootObject);
-    request(): Promise<UsertagsFeedResponseRootObject>;
-    items(): Promise<UsertagsFeedResponseItemsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

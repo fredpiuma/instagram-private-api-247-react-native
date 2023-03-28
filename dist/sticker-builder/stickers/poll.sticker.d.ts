@@ -3,7 +3,7 @@ export interface PollStickerTallie {
     text: string;
     fontSize?: number;
 }
-declare type Tallies = [PollStickerTallie, PollStickerTallie];
+type Tallies = [PollStickerTallie, PollStickerTallie];
 export declare class PollSticker extends InstaSticker {
     private _tallies;
     get tallies(): Tallies;

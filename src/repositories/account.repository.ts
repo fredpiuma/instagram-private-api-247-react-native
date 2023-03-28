@@ -26,7 +26,7 @@ export class AccountRepository extends Repository {
     if (!this.client.state.passwordEncryptionPubKey) {
       await this.client.qe.syncLoginExperiments();
     }
-    const {encrypted, time} = this.encryptPassword(password);
+    const { encrypted, time } = this.encryptPassword(password);
     const response = await Bluebird.try(() =>
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
         method: 'POST',
@@ -45,7 +45,7 @@ export class AccountRepository extends Repository {
           jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
         }),
       }),
-    ).catch(IgResponseError, error => {
+    ).catch(IgResponseError, (error) => {
       if (error.response.body.two_factor_required) {
         AccountRepository.accountDebug(
           `Login failed, two factor auth required: ${JSON.stringify(error.response.body.two_factor_info)}`,
@@ -76,14 +76,17 @@ export class AccountRepository extends Repository {
     return `2${sum}`;
   }
 
-  public encryptPassword(password: string): { time: string, encrypted: string } {
+  public encryptPassword(password: string): { time: string; encrypted: string } {
     const randKey = crypto.randomBytes(32);
     const iv = crypto.randomBytes(12);
-    const rsaEncrypted = crypto.publicEncrypt({
-      key: Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString(),
-      // @ts-ignore
-      padding: crypto.constants.RSA_PKCS1_PADDING,
-    }, randKey);
+    const rsaEncrypted = crypto.publicEncrypt(
+      {
+        key: Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString(),
+        // @ts-ignore
+        padding: crypto.constants.RSA_PKCS1_PADDING,
+      },
+      randKey,
+    );
     const cipher = crypto.createCipheriv('aes-256-gcm', randKey, iv);
     const time = Math.floor(Date.now() / 1000).toString();
     cipher.setAAD(Buffer.from(time));
@@ -94,11 +97,13 @@ export class AccountRepository extends Repository {
     return {
       time,
       encrypted: Buffer.concat([
-        Buffer.from([1, this.client.state.passwordEncryptionKeyId]),
+        Buffer.from([1, +this.client.state.passwordEncryptionKeyId]),
         iv,
         sizeBuffer,
-        rsaEncrypted, authTag, aesEncrypted])
-        .toString('base64'),
+        rsaEncrypted,
+        authTag,
+        aesEncrypted,
+      ]).toString('base64'),
     };
   }
 
@@ -161,7 +166,7 @@ export class AccountRepository extends Repository {
           sn_result: '',
         }),
       }),
-    ).catch(IgResponseError, error => {
+    ).catch(IgResponseError, (error) => {
       switch (error.response.body.error_type) {
         case 'signup_block': {
           AccountRepository.accountDebug('Signup failed');

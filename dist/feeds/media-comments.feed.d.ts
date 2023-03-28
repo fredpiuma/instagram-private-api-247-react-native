@@ -5,6 +5,6 @@ export declare class MediaCommentsFeed extends Feed<MediaCommentsFeedResponse, M
     private nextMaxId;
     private nextMinId;
     set state(body: MediaCommentsFeedResponse);
-    request(): Promise<MediaCommentsFeedResponse>;
-    items(): Promise<MediaCommentsFeedResponseCommentsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

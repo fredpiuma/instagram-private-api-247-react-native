@@ -5,6 +5,6 @@ export declare class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObjec
     userIds: Array<number | string>;
     source: IgAppModule;
     protected set state(body: any);
-    request(): Promise<ReelsMediaFeedResponseRootObject>;
+    request(): Promise<any>;
     items(): Promise<ReelsMediaFeedResponseItem[]>;
 }

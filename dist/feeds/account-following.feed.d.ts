@@ -9,6 +9,6 @@ export declare class AccountFollowingFeed extends Feed<AccountFollowingFeedRespo
     id: number | string;
     nextMaxId: string;
     set state(body: AccountFollowingFeedResponse);
-    request(): Promise<AccountFollowingFeedResponse>;
-    items(): Promise<AccountFollowingFeedResponseUsersItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

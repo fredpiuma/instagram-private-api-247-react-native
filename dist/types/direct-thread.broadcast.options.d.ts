@@ -15,5 +15,5 @@ interface DirectTreadBroadcastBaseOptions {
     };
     signed?: boolean;
 }
-export declare type DirectThreadBroadcastOptions = DirectTreadBroadcastBaseOptions & XOR<ExistingThreadOptions, CreateThreadOptions>;
+export type DirectThreadBroadcastOptions = DirectTreadBroadcastBaseOptions & XOR<ExistingThreadOptions, CreateThreadOptions>;
 export {};

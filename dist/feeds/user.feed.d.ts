@@ -4,6 +4,6 @@ export declare class UserFeed extends Feed<UserFeedResponse, UserFeedResponseIte
     id: number | string;
     private nextMaxId;
     protected set state(body: UserFeedResponse);
-    request(): Promise<UserFeedResponse>;
-    items(): Promise<UserFeedResponseItemsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

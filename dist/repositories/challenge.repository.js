@@ -102,7 +102,7 @@ class ChallengeRepository extends repository_1.Repository {
             }),
         })
             .catch((error) => {
-            if (error.response.statusCode === 400 && error.response.body.status === 'fail') {
+            if (error.response.status === 400 && error.response.body.status === 'fail') {
                 throw new errors_1.IgChallengeWrongCodeError(error.response.body.message);
             }
             throw error;
@@ -136,7 +136,7 @@ class ChallengeRepository extends repository_1.Repository {
             },
         })
             .catch((error) => {
-            if (error.response.statusCode === 400 && error.response.body.status === 'fail') {
+            if (error.response.status === 400 && error.response.body.status === 'fail') {
                 throw new errors_1.IgChallengeWrongCodeError(error.response.body.message);
             }
             throw error;
@@ -169,7 +169,7 @@ class ChallengeRepository extends repository_1.Repository {
             form: formData,
         })
             .catch((error) => {
-            if (error.response.statusCode === 400 && error.response.body.status === 'fail') {
+            if (error.response.status === 400 && error.response.body.status === 'fail') {
                 throw new errors_1.IgChallengeWrongCodeError(error.response.body.message);
             }
             throw error;

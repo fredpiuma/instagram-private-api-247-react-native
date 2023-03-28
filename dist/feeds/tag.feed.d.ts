@@ -4,6 +4,6 @@ export declare class TagFeed extends Feed<TagFeedResponse, TagFeedResponseItemsI
     tag: string;
     private nextMaxId;
     set state(body: TagFeedResponse);
-    request(): Promise<TagFeedResponse>;
-    items(): Promise<TagFeedResponseItemsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

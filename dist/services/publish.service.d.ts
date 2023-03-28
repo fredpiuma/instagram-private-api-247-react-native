@@ -17,7 +17,7 @@ export declare class PublishService extends Repository {
     private static read32;
     private static read16;
     photo(options: PostingPhotoOptions): Promise<import("../responses").MediaRepositoryConfigureResponseRootObject>;
-    video(options: PostingVideoOptions): Promise<import("../responses").MediaRepositoryConfigureResponseRootObject>;
+    video(options: PostingVideoOptions): Promise<any>;
     album(options: PostingAlbumOptions): Promise<any>;
     story(options: PostingStoryPhotoOptions | PostingStoryVideoOptions): Promise<any>;
     igtvVideo(options: PostingIgtvOptions): Promise<any>;

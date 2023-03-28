@@ -32,7 +32,7 @@ export interface UploadVideoSegmentTransferOptions {
     startOffset: number;
     segment: Buffer;
 }
-export declare type SegmentDivider = (options: {
+export type SegmentDivider = (options: {
     buffer: Buffer;
     client: IgApiClient;
 }) => Buffer[];

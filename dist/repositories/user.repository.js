@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRepository = void 0;
 const repository_1 = require("../core/repository");
 const errors_1 = require("../errors");
 const lodash_1 = require("lodash");
-const Chance = require("chance");
+const chance_1 = __importDefault(require("chance"));
 class UserRepository extends repository_1.Repository {
     async info(id) {
         const { body } = await this.client.request.send({
@@ -42,7 +45,7 @@ class UserRepository extends repository_1.Repository {
         username = username.toLowerCase();
         const result = await this.search(username);
         const users = result.users;
-        const account = users.find(user => user.username === username);
+        const account = users.find((user) => user.username === username);
         if (!account) {
             throw new errors_1.IgExactUserNotFoundError();
         }
@@ -90,7 +93,7 @@ class UserRepository extends repository_1.Repository {
     }
     async lookup(options) {
         options = (0, lodash_1.defaults)(options, {
-            waterfallId: new Chance().guid({ version: 4 }),
+            waterfallId: new chance_1.default().guid({ version: 4 }),
             directlySignIn: true,
             countryCodes: [{ country_code: '1', source: ['default'] }],
         });

@@ -26,11 +26,11 @@ export declare class MediaRepository extends Repository {
         text: string;
         replyToCommentId?: string;
         module?: string;
-    }): Promise<import("../responses").MediaRepositoryCommentResponseComment>;
+    }): Promise<any>;
     commentsDisable(mediaId: any): Promise<any>;
     commentsEnable(mediaId: any): Promise<any>;
     likers(id: string): Promise<MediaRepositoryLikersResponseRootObject>;
-    blocked(): Promise<string[]>;
+    blocked(): Promise<any>;
     uploadFinish(options: {
         upload_id: string;
         source_type: string;
@@ -46,7 +46,7 @@ export declare class MediaRepository extends Repository {
     }): Promise<any>;
     private applyConfigureDefaults;
     configure(options: MediaConfigureTimelineOptions): Promise<MediaRepositoryConfigureResponseRootObject>;
-    configureVideo(options: MediaConfigureTimelineVideoOptions): Promise<MediaRepositoryConfigureResponseRootObject>;
+    configureVideo(options: MediaConfigureTimelineVideoOptions): Promise<any>;
     private static stringifyStoryStickers;
     configureToStory(options: MediaConfigureStoryPhotoOptions): Promise<any>;
     configureToStoryVideo(options: MediaConfigureStoryVideoOptions): Promise<any>;

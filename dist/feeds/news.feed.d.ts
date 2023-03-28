@@ -3,6 +3,6 @@ import { NewsFeedResponseRootObject, NewsFeedResponseStoriesItem } from '../resp
 export declare class NewsFeed extends Feed<NewsFeedResponseRootObject, NewsFeedResponseStoriesItem> {
     private nextMaxId;
     set state(body: NewsFeedResponseRootObject);
-    request(): Promise<NewsFeedResponseRootObject>;
-    items(): Promise<NewsFeedResponseStoriesItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

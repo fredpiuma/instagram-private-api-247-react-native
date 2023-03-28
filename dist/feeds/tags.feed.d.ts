@@ -7,6 +7,6 @@ export declare class TagsFeed extends Feed<TagsFeedResponse, TagsFeedResponseMed
     private nextPage;
     private nextMediaIds;
     protected set state(body: TagsFeedResponse);
-    request(): Promise<TagsFeedResponse>;
-    items(): Promise<TagsFeedResponseMedia[]>;
+    request(): Promise<any>;
+    items(): Promise<unknown[]>;
 }

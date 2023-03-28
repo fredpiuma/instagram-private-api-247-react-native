@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { Repository } from '../core/repository';
-import { AccountRepositoryCurrentUserResponseRootObject, AccountRepositoryLoginResponseLogged_in_user, StatusResponse } from '../responses';
+import { AccountRepositoryCurrentUserResponseRootObject, AccountRepositoryLoginResponseLogged_in_user } from '../responses';
 import { AccountEditProfileOptions, AccountTwoFactorLoginOptions } from '../types';
 export declare class AccountRepository extends Repository {
     private static accountDebug;
@@ -11,17 +11,17 @@ export declare class AccountRepository extends Repository {
         encrypted: string;
     };
     twoFactorLogin(options: AccountTwoFactorLoginOptions): Promise<AccountRepositoryLoginResponseLogged_in_user>;
-    logout(): Promise<StatusResponse>;
+    logout(): Promise<any>;
     create({ username, password, email, first_name }: {
         username: any;
         password: any;
         email: any;
         first_name: any;
     }): Promise<any>;
-    currentUser(): Promise<import("../responses").AccountRepositoryCurrentUserResponseUser>;
-    setBiography(text: string): Promise<import("../responses").AccountRepositoryCurrentUserResponseUser>;
+    currentUser(): Promise<any>;
+    setBiography(text: string): Promise<any>;
     changeProfilePicture(picture: Buffer): Promise<AccountRepositoryCurrentUserResponseRootObject>;
-    editProfile(options: AccountEditProfileOptions): Promise<import("../responses").AccountRepositoryCurrentUserResponseUser>;
+    editProfile(options: AccountEditProfileOptions): Promise<any>;
     changePassword(oldPassword: string, newPassword: string): Promise<any>;
     removeProfilePicture(): Promise<AccountRepositoryCurrentUserResponseRootObject>;
     setPrivate(): Promise<AccountRepositoryCurrentUserResponseRootObject>;

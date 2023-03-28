@@ -10,7 +10,6 @@ import {
 import { DirectThreadBroadcastOptions } from '../types';
 import { IgClientError, IgResponseError } from '../errors';
 import { PublishService } from '../services/publish.service';
-import * as Bluebird from 'bluebird';
 
 export class DirectThreadEntity extends Entity {
   threadId: string = null;
@@ -138,13 +137,19 @@ export class DirectThreadEntity extends Entity {
       ...videoInfo,
     });
 
-    await Bluebird.try(() =>
-      this.client.media.uploadFinish({
+    try {
+      await this.client.media.uploadFinish({
         upload_id: uploadId,
         source_type: '2',
         video: { length: videoInfo.duration / 1000.0 },
-      }),
-    ).catch(IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 4 * 1000));
+      });
+    } catch (error) {
+      if (error instanceof IgResponseError) {
+        await PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 4 * 1000)(error);
+      } else {
+        throw error;
+      }
+    }
 
     return await this.broadcast({
       item: 'configure_video',
@@ -167,12 +172,18 @@ export class DirectThreadEntity extends Entity {
       mediaType: '11',
     });
 
-    await Bluebird.try(() =>
-      this.client.media.uploadFinish({
+    try {
+      await this.client.media.uploadFinish({
         upload_id: uploadId,
         source_type: '4',
-      }),
-    ).catch(IgResponseError, PublishService.catchTranscodeError({ duration }, options.transcodeDelay || 4 * 1000));
+      });
+    } catch (error) {
+      if (error instanceof IgResponseError) {
+        await PublishService.catchTranscodeError({ duration }, options.transcodeDelay || 4 * 1000)(error);
+      } else {
+        throw error;
+      }
+    }
 
     return await this.broadcast({
       item: 'share_voice',

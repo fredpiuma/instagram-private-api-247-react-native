@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadRepository = void 0;
 const lodash_1 = require("lodash");
 const repository_1 = require("../core/repository");
 const Chance = require("chance");
-const debug_1 = require("debug");
+const debug_1 = __importDefault(require("debug"));
 class UploadRepository extends repository_1.Repository {
     constructor() {
         super(...arguments);
@@ -169,6 +172,6 @@ class UploadRepository extends repository_1.Repository {
         return ruploadParams;
     }
 }
-exports.UploadRepository = UploadRepository;
 UploadRepository.uploadDebug = (0, debug_1.default)('ig:upload');
+exports.UploadRepository = UploadRepository;
 //# sourceMappingURL=upload.repository.js.map

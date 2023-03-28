@@ -5,7 +5,7 @@ export declare class DirectPendingInboxFeed extends Feed<DirectInboxFeedResponse
     private cursor;
     private seqId;
     set state(body: DirectInboxFeedResponse);
-    request(): Promise<DirectInboxFeedResponse>;
-    items(): Promise<DirectInboxFeedResponseThreadsItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
     records(): Promise<DirectThreadEntity[]>;
 }

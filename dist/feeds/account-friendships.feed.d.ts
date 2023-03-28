@@ -3,6 +3,6 @@ import { PendingFriendshipsFeedResponse, PendingFriendshipsFeedResponseUsersItem
 export declare class PendingFriendshipsFeed extends Feed<PendingFriendshipsFeedResponse, PendingFriendshipsFeedResponseUsersItem> {
     private nextMaxId;
     set state(body: PendingFriendshipsFeedResponse);
-    request(): Promise<PendingFriendshipsFeedResponse>;
-    items(): Promise<PendingFriendshipsFeedResponseUsersItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

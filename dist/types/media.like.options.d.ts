@@ -25,20 +25,20 @@ interface VideoViewProfile extends BaseProfile {
 interface PhotoViewProfile extends BaseProfile {
     module_name: 'photo_view_profile';
 }
-export declare type LikeModuleInfoOption = (FeedTimeline | FeedContextualHashtag | FeedContextualLocation | Profile | MediaViewProfile | VideoViewProfile | PhotoViewProfile) & {
+export type LikeModuleInfoOption = (FeedTimeline | FeedContextualHashtag | FeedContextualLocation | Profile | MediaViewProfile | VideoViewProfile | PhotoViewProfile) & {
     [x: string]: any;
 };
-declare type LikeOrUnlikeBaseOptions = {
+type LikeOrUnlikeBaseOptions = {
     mediaId: string;
     moduleInfo: LikeModuleInfoOption;
 };
-export declare type LikeRequestOptions = LikeOrUnlikeBaseOptions & {
+export type LikeRequestOptions = LikeOrUnlikeBaseOptions & {
     d: 1 | 0;
 };
-export declare type UnlikeRequestOptions = LikeOrUnlikeBaseOptions & {
+export type UnlikeRequestOptions = LikeOrUnlikeBaseOptions & {
     d?: 0;
 };
-export declare type MediaLikeOrUnlikeOptions = LikeOrUnlikeBaseOptions & {
+export type MediaLikeOrUnlikeOptions = LikeOrUnlikeBaseOptions & {
     action: 'like' | 'unlike';
     d?: 1 | 0;
 };

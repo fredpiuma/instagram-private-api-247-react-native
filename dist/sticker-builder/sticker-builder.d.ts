@@ -1,7 +1,7 @@
 import { Diff } from 'utility-types';
 import { AttachmentSticker, ChatSticker, CountdownSticker, HashtagSticker, InstaSticker, LocationSticker, MentionSticker, PollSticker, QuestionSticker, QuizSticker, SliderSticker } from './stickers';
-export declare type StickerOptions<T extends InstaSticker> = Diff<T, InstaSticker> & Partial<InstaSticker>;
-export declare type StickerConfig = any & {
+export type StickerOptions<T extends InstaSticker> = Diff<T, InstaSticker> & Partial<InstaSticker>;
+export type StickerConfig = any & {
     story_sticker_ids: string;
 };
 export declare class StickerBuilder {

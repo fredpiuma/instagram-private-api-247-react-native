@@ -1,27 +1,49 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.State = void 0;
-const _ = require("lodash");
-const Bluebird = require("bluebird");
-const Chance = require("chance");
-const request_1 = require("request");
-const tough_cookie_1 = require("tough-cookie");
-const devices = require("../samples/devices.json");
-const builds = require("../samples/builds.json");
-const supportedCapabilities = require("../samples/supported-capabilities.json");
-const Constants = require("./constants");
+const chance_1 = __importDefault(require("chance"));
+const devices = __importStar(require("../samples/devices.json"));
+const builds = __importStar(require("../samples/builds.json"));
+const supportedCapabilities = __importStar(require("../samples/supported-capabilities.json"));
+const Constants = __importStar(require("./constants"));
 const errors_1 = require("../errors");
 const decorators_1 = require("../decorators");
-const debug_1 = require("debug");
+const debug_1 = __importDefault(require("debug"));
 const AUTHORIZATION_TAG = Symbol('authorization-tag');
 class State {
     constructor() {
@@ -36,8 +58,6 @@ class State {
         this.euDCEnabled = undefined;
         this.adsOptOut = false;
         this.thumbnailCacheBustingValue = 1000;
-        this.cookieStore = new tough_cookie_1.MemoryCookieStore();
-        this.cookieJar = (0, request_1.jar)(this.cookieStore);
         this.checkpoint = null;
         this.challenge = null;
         this.clientSessionIdLifetime = 1200000;
@@ -101,12 +121,12 @@ class State {
         };
     }
     get batteryLevel() {
-        const chance = new Chance(this.deviceId);
+        const chance = new chance_1.default(this.deviceId);
         const percentTime = chance.integer({ min: 200, max: 600 });
         return 100 - (Math.round(Date.now() / 1000 / percentTime) % 100);
     }
     get isCharging() {
-        const chance = new Chance(`${this.deviceId}${Math.round(Date.now() / 10800000)}`);
+        const chance = new chance_1.default(`${this.deviceId}${Math.round(Date.now() / 10800000)}`);
         return chance.bool();
     }
     get challengeUrl() {
@@ -116,13 +136,7 @@ class State {
         return `/api/v1${this.checkpoint.challenge.api_path}`;
     }
     get cookieCsrfToken() {
-        try {
-            return this.extractCookieValue('csrftoken');
-        }
-        catch (_a) {
-            State.stateDebug('csrftoken lookup failed, returning "missing".');
-            return 'missing';
-        }
+        return 'unset';
     }
     get cookieUserId() {
         const cookie = this.extractCookie('ds_user_id');
@@ -137,22 +151,15 @@ class State {
         return this.parsedAuthorization.ds_user_id;
     }
     get cookieUsername() {
-        return this.extractCookieValue('ds_user');
+        return null;
     }
     isExperimentEnabled(experiment) {
         return this.experiments.includes(experiment);
     }
     extractCookie(key) {
-        const cookies = this.cookieJar.getCookies(this.constants.HOST);
-        return _.find(cookies, { key }) || null;
     }
     extractCookieValue(key) {
-        const cookie = this.extractCookie(key);
-        if (cookie === null) {
-            State.stateDebug(`Could not find ${key}`);
-            throw new errors_1.IgCookieNotFoundError(key);
-        }
-        return cookie.value;
+        return null;
     }
     extractUserId() {
         try {
@@ -166,10 +173,8 @@ class State {
         }
     }
     async deserializeCookieJar(cookies) {
-        this.cookieJar['_jar'] = await Bluebird.fromCallback(cb => tough_cookie_1.CookieJar.deserialize(cookies, this.cookieStore, cb));
     }
     async serializeCookieJar() {
-        return Bluebird.fromCallback(cb => this.cookieJar['_jar'].serialize(cb));
     }
     async serialize() {
         const obj = {
@@ -202,7 +207,7 @@ class State {
         }
     }
     generateDevice(seed) {
-        const chance = new Chance(seed);
+        const chance = new chance_1.default(seed);
         this.deviceString = chance.pickone(devices);
         const id = chance.string({
             pool: 'abcdef0123456789',
@@ -215,7 +220,7 @@ class State {
         this.build = chance.pickone(builds);
     }
     generateTemporaryGuid(seed, lifetime) {
-        return new Chance(`${seed}${this.deviceId}${Math.round(Date.now() / lifetime)}`).guid();
+        return new chance_1.default(`${seed}${this.deviceId}${Math.round(Date.now() / lifetime)}`).guid();
     }
     hasValidAuthorization() {
         return this.parsedAuthorization && this.parsedAuthorization[AUTHORIZATION_TAG] === this.authorization;
@@ -247,14 +252,6 @@ __decorate([
     (0, decorators_1.Enumerable)(false),
     __metadata("design:type", String)
 ], State.prototype, "proxyUrl", void 0);
-__decorate([
-    (0, decorators_1.Enumerable)(false),
-    __metadata("design:type", Object)
-], State.prototype, "cookieStore", void 0);
-__decorate([
-    (0, decorators_1.Enumerable)(false),
-    __metadata("design:type", Object)
-], State.prototype, "cookieJar", void 0);
 __decorate([
     (0, decorators_1.Enumerable)(false),
     __metadata("design:type", Object)

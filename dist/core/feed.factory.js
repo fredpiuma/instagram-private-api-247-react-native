@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FeedFactory = void 0;
 const feeds_1 = require("../feeds");
 const class_transformer_1 = require("class-transformer");
-const Chance = require("chance");
+const chance_1 = __importDefault(require("chance"));
 const user_story_feed_1 = require("../feeds/user-story.feed");
 const list_reel_media_viewer_feed_1 = require("../feeds/list-reel-media-viewer.feed");
 const media_inline_child_comments_feed_1 = require("../feeds/media.inline-child-comments.feed");
@@ -96,7 +99,7 @@ class FeedFactory {
         const options = {
             query,
             product,
-            searchSessionId: new Chance(query).guid(),
+            searchSessionId: new chance_1.default(query).guid(),
         };
         return (0, class_transformer_1.plainToClassFromExist)(new feeds_1.MusicSearchFeed(this.client), options);
     }

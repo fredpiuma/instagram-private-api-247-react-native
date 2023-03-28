@@ -1,4 +1,30 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccountRepository = void 0;
 const repository_1 = require("../core/repository");
@@ -6,8 +32,8 @@ const errors_1 = require("../errors");
 const lodash_1 = require("lodash");
 const ig_signup_block_error_1 = require("../errors/ig-signup-block.error");
 const Bluebird = require("bluebird");
-const debug_1 = require("debug");
-const crypto = require("crypto");
+const debug_1 = __importDefault(require("debug"));
+const crypto = __importStar(require("crypto"));
 class AccountRepository extends repository_1.Repository {
     async login(username, password) {
         if (!this.client.state.passwordEncryptionPubKey) {
@@ -30,7 +56,7 @@ class AccountRepository extends repository_1.Repository {
                 country_codes: JSON.stringify([{ country_code: '1', source: 'default' }]),
                 jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
             }),
-        })).catch(errors_1.IgResponseError, error => {
+        })).catch(errors_1.IgResponseError, (error) => {
             if (error.response.body.two_factor_required) {
                 AccountRepository.accountDebug(`Login failed, two factor auth required: ${JSON.stringify(error.response.body.two_factor_info)}`);
                 throw new errors_1.IgLoginTwoFactorRequiredError(error.response);
@@ -74,12 +100,13 @@ class AccountRepository extends repository_1.Repository {
         return {
             time,
             encrypted: Buffer.concat([
-                Buffer.from([1, this.client.state.passwordEncryptionKeyId]),
+                Buffer.from([1, +this.client.state.passwordEncryptionKeyId]),
                 iv,
                 sizeBuffer,
-                rsaEncrypted, authTag, aesEncrypted
-            ])
-                .toString('base64'),
+                rsaEncrypted,
+                authTag,
+                aesEncrypted,
+            ]).toString('base64'),
         };
     }
     async twoFactorLogin(options) {
@@ -135,7 +162,7 @@ class AccountRepository extends repository_1.Repository {
                 sn_nonce: '',
                 sn_result: '',
             }),
-        })).catch(errors_1.IgResponseError, error => {
+        })).catch(errors_1.IgResponseError, (error) => {
             switch (error.response.body.error_type) {
                 case 'signup_block': {
                     AccountRepository.accountDebug('Signup failed');
@@ -312,6 +339,6 @@ class AccountRepository extends repository_1.Repository {
         return body;
     }
 }
-exports.AccountRepository = AccountRepository;
 AccountRepository.accountDebug = (0, debug_1.default)('ig:account');
+exports.AccountRepository = AccountRepository;
 //# sourceMappingURL=account.repository.js.map

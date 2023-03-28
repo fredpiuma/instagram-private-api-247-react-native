@@ -22,7 +22,7 @@ import { PostingLocation, PostingStoryOptions } from '../types/posting.options';
 import { IgConfigureVideoError, IgResponseError, IgUploadVideoError } from '../errors';
 import { StatusResponse, UploadRepositoryVideoResponseRootObject } from '../responses';
 import { PostingIgtvOptions } from '../types/posting.igtv.options';
-import sizeOf = require('image-size');
+import sizeOf from 'image-size';
 import Bluebird = require('bluebird');
 import Chance = require('chance');
 import { random, defaults } from 'lodash';
@@ -40,8 +40,8 @@ export class PublishService extends Repository {
    * @param transcodeDelayInMs The delay for instagram to transcode the video
    */
   public static catchTranscodeError(videoInfo, transcodeDelayInMs: number) {
-    return error => {
-      if (error.response.statusCode === 202) {
+    return (error) => {
+      if (error.response.status === 202) {
         PublishService.publishDebug(
           `Received trancode error: ${JSON.stringify(error.response.body)}, waiting ${transcodeDelayInMs}ms`,
         );
@@ -161,7 +161,7 @@ export class PublishService extends Repository {
         uploadId,
         ...videoInfo,
       }),
-    ).catch(IgResponseError, error => {
+    ).catch(IgResponseError, (error) => {
       throw new IgUploadVideoError(error.response as IgResponse<UploadRepositoryVideoResponseRootObject>, videoInfo);
     });
     await this.client.upload.photo({
@@ -236,7 +236,7 @@ export class PublishService extends Repository {
             isSidecar: true,
             ...item.videoInfo,
           }),
-        ).catch(IgResponseError, error => {
+        ).catch(IgResponseError, (error) => {
           throw new IgConfigureVideoError(
             error.response as IgResponse<UploadRepositoryVideoResponseRootObject>,
             item.videoInfo,
@@ -259,7 +259,7 @@ export class PublishService extends Repository {
 
     return await this.client.media.configureSidecar({
       caption: options.caption,
-      children_metadata: options.items.map(item => {
+      children_metadata: options.items.map((item) => {
         if (isVideo(item)) {
           return {
             upload_id: item.uploadId,
@@ -323,7 +323,7 @@ export class PublishService extends Repository {
       if (typeof options.caption === 'undefined') {
         options.caption = '';
       }
-      options.hashtags.forEach(hashtag => {
+      options.hashtags.forEach((hashtag) => {
         if (hashtag.tag_name.includes('#')) {
           hashtag.tag_name = hashtag.tag_name.replace('#', '');
         }
@@ -551,7 +551,7 @@ export class PublishService extends Repository {
         forAlbum: true,
         ...videoInfo,
       }),
-    ).catch(IgResponseError, error => {
+    ).catch(IgResponseError, (error) => {
       throw new IgConfigureVideoError(error.response as IgResponse<UploadRepositoryVideoResponseRootObject>, videoInfo);
     });
     await this.client.upload.photo({
@@ -574,7 +574,7 @@ export class PublishService extends Repository {
         height: videoInfo.height,
         ...configureOptions,
       }),
-    ).catch(IgResponseError, error => {
+    ).catch(IgResponseError, (error) => {
       throw new IgConfigureVideoError(error.response as IgResponse<UploadRepositoryVideoResponseRootObject>, videoInfo);
     });
   }

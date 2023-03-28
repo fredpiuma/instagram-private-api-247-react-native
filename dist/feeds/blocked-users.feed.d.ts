@@ -3,6 +3,6 @@ import { BlockedUsersFeedResponseRootObject, BlockedUsersFeedResponseBlockedList
 export declare class BlockedUsersFeed extends Feed<BlockedUsersFeedResponseRootObject, BlockedUsersFeedResponseBlockedListItem> {
     private nextMaxId;
     set state(body: BlockedUsersFeedResponseRootObject);
-    request(): Promise<BlockedUsersFeedResponseRootObject>;
-    items(): Promise<BlockedUsersFeedResponseBlockedListItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

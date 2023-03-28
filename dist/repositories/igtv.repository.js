@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IgtvRepository = void 0;
 const repository_1 = require("../core/repository");
 const lodash_1 = require("lodash");
-const Chance = require("chance");
+const chance_1 = __importDefault(require("chance"));
 class IgtvRepository extends repository_1.Repository {
     async writeSeenState(options) {
         const { body } = await this.client.request.send({
@@ -43,7 +46,7 @@ class IgtvRepository extends repository_1.Repository {
             form: this.client.request.sign({
                 title,
                 description,
-                igtv_composer_session_id: new Chance().guid({ version: 4 }),
+                igtv_composer_session_id: new chance_1.default().guid({ version: 4 }),
                 _csrftoken: this.client.state.cookieCsrfToken,
                 _uid: this.client.state.cookieUserId,
                 _uuid: this.client.state.uuid,

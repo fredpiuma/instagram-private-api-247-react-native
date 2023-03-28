@@ -4,7 +4,6 @@ exports.DirectThreadEntity = void 0;
 const entity_1 = require("../core/entity");
 const errors_1 = require("../errors");
 const publish_service_1 = require("../services/publish.service");
-const Bluebird = require("bluebird");
 class DirectThreadEntity extends entity_1.Entity {
     constructor() {
         super(...arguments);
@@ -104,11 +103,21 @@ class DirectThreadEntity extends entity_1.Entity {
         const uploadId = options.uploadId || Date.now().toString();
         const videoInfo = publish_service_1.PublishService.getVideoInfo(options.video);
         await this.client.upload.video(Object.assign({ video: options.video, uploadId, isDirect: true }, videoInfo));
-        await Bluebird.try(() => this.client.media.uploadFinish({
-            upload_id: uploadId,
-            source_type: '2',
-            video: { length: videoInfo.duration / 1000.0 },
-        })).catch(errors_1.IgResponseError, publish_service_1.PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 4 * 1000));
+        try {
+            await this.client.media.uploadFinish({
+                upload_id: uploadId,
+                source_type: '2',
+                video: { length: videoInfo.duration / 1000.0 },
+            });
+        }
+        catch (error) {
+            if (error instanceof errors_1.IgResponseError) {
+                await publish_service_1.PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 4 * 1000)(error);
+            }
+            else {
+                throw error;
+            }
+        }
         return await this.broadcast({
             item: 'configure_video',
             form: {
@@ -128,10 +137,20 @@ class DirectThreadEntity extends entity_1.Entity {
             isDirectVoice: true,
             mediaType: '11',
         });
-        await Bluebird.try(() => this.client.media.uploadFinish({
-            upload_id: uploadId,
-            source_type: '4',
-        })).catch(errors_1.IgResponseError, publish_service_1.PublishService.catchTranscodeError({ duration }, options.transcodeDelay || 4 * 1000));
+        try {
+            await this.client.media.uploadFinish({
+                upload_id: uploadId,
+                source_type: '4',
+            });
+        }
+        catch (error) {
+            if (error instanceof errors_1.IgResponseError) {
+                await publish_service_1.PublishService.catchTranscodeError({ duration }, options.transcodeDelay || 4 * 1000)(error);
+            }
+            else {
+                throw error;
+            }
+        }
         return await this.broadcast({
             item: 'share_voice',
             form: {

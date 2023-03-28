@@ -3,6 +3,6 @@ import { DiscoverFeedResponseRootObject, DiscoverFeedResponseUser } from '../res
 export declare class DiscoverFeed extends Feed<DiscoverFeedResponseRootObject, DiscoverFeedResponseUser> {
     private nextMaxId;
     set state(body: DiscoverFeedResponseRootObject);
-    request(): Promise<DiscoverFeedResponseRootObject>;
-    items(): Promise<DiscoverFeedResponseUser[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

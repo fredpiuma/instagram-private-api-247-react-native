@@ -8,4 +8,4 @@ export interface StoryServiceSeenInputItems {
 export interface StoryServiceSeenInputReels {
     items: StoryServiceSeenInputItems[];
 }
-export declare type StoryServiceInput = StoryServiceSeenInputItems[] | StoryServiceSeenInputReels;
+export type StoryServiceInput = StoryServiceSeenInputItems[] | StoryServiceSeenInputReels;

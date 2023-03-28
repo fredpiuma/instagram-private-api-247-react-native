@@ -1,15 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PublishService = void 0;
 const repository_1 = require("../core/repository");
 const types_1 = require("../types");
 const errors_1 = require("../errors");
-const sizeOf = require("image-size");
+const image_size_1 = __importDefault(require("image-size"));
 const Bluebird = require("bluebird");
 const Chance = require("chance");
 const lodash_1 = require("lodash");
 const upload_repository_1 = require("../repositories/upload.repository");
-const debug_1 = require("debug");
+const debug_1 = __importDefault(require("debug"));
 const sticker_builder_1 = require("../sticker-builder");
 class PublishService extends repository_1.Repository {
     constructor() {
@@ -17,8 +20,8 @@ class PublishService extends repository_1.Repository {
         this.chance = new Chance();
     }
     static catchTranscodeError(videoInfo, transcodeDelayInMs) {
-        return error => {
-            if (error.response.statusCode === 202) {
+        return (error) => {
+            if (error.response.status === 202) {
                 PublishService.publishDebug(`Received trancode error: ${JSON.stringify(error.response.body)}, waiting ${transcodeDelayInMs}ms`);
                 return Bluebird.delay(transcodeDelayInMs);
             }
@@ -80,7 +83,7 @@ class PublishService extends repository_1.Repository {
         const uploadedPhoto = await this.client.upload.photo({
             file: options.file,
         });
-        const imageSize = await sizeOf(options.file);
+        const imageSize = await (0, image_size_1.default)(options.file);
         const configureOptions = Object.assign({ upload_id: uploadedPhoto.upload_id, width: imageSize.width, height: imageSize.height, caption: options.caption }, PublishService.makeLocationOptions(options.location));
         if (typeof options.usertags !== 'undefined') {
             configureOptions.usertags = options.usertags;
@@ -91,7 +94,7 @@ class PublishService extends repository_1.Repository {
         const uploadId = Date.now().toString();
         const videoInfo = PublishService.getVideoInfo(options.video);
         PublishService.publishDebug(`Publishing video to timeline: ${JSON.stringify(videoInfo)}`);
-        await Bluebird.try(() => this.regularVideo(Object.assign({ video: options.video, uploadId }, videoInfo))).catch(errors_1.IgResponseError, error => {
+        await Bluebird.try(() => this.regularVideo(Object.assign({ video: options.video, uploadId }, videoInfo))).catch(errors_1.IgResponseError, (error) => {
             throw new errors_1.IgUploadVideoError(error.response, videoInfo);
         });
         await this.client.upload.photo({
@@ -134,7 +137,7 @@ class PublishService extends repository_1.Repository {
                     uploadId: item.uploadId,
                     isSidecar: true,
                 });
-                const { width, height } = await sizeOf(item.file);
+                const { width, height } = await (0, image_size_1.default)(item.file);
                 item.width = width;
                 item.height = height;
                 item.uploadId = uploadedPhoto.upload_id;
@@ -143,7 +146,7 @@ class PublishService extends repository_1.Repository {
                 item.videoInfo = PublishService.getVideoInfo(item.video);
                 item.uploadId = Date.now().toString();
                 PublishService.publishDebug(`Adding video to album: ${JSON.stringify(item.videoInfo)}`);
-                await Bluebird.try(() => this.regularVideo(Object.assign({ video: item.video, uploadId: item.uploadId, isSidecar: true }, item.videoInfo))).catch(errors_1.IgResponseError, error => {
+                await Bluebird.try(() => this.regularVideo(Object.assign({ video: item.video, uploadId: item.uploadId, isSidecar: true }, item.videoInfo))).catch(errors_1.IgResponseError, (error) => {
                     throw new errors_1.IgConfigureVideoError(error.response, item.videoInfo);
                 });
                 await this.client.upload.photo({
@@ -158,7 +161,7 @@ class PublishService extends repository_1.Repository {
                 })).catch(errors_1.IgResponseError, PublishService.catchTranscodeError(item.videoInfo, item.transcodeDelay));
             }
         }
-        return await this.client.media.configureSidecar(Object.assign({ caption: options.caption, children_metadata: options.items.map(item => {
+        return await this.client.media.configureSidecar(Object.assign({ caption: options.caption, children_metadata: options.items.map((item) => {
                 if (isVideo(item)) {
                     return {
                         upload_id: item.uploadId,
@@ -208,7 +211,7 @@ class PublishService extends repository_1.Repository {
             if (typeof options.caption === 'undefined') {
                 options.caption = '';
             }
-            options.hashtags.forEach(hashtag => {
+            options.hashtags.forEach((hashtag) => {
                 if (hashtag.tag_name.includes('#')) {
                     hashtag.tag_name = hashtag.tag_name.replace('#', '');
                 }
@@ -384,7 +387,7 @@ class PublishService extends repository_1.Repository {
     }
     async uploadAndConfigureStoryPhoto(options, configureOptions) {
         const uploadId = Date.now().toString();
-        const imageSize = await sizeOf(options.file);
+        const imageSize = await (0, image_size_1.default)(options.file);
         await this.client.upload.photo({
             file: options.file,
             uploadId,
@@ -396,7 +399,7 @@ class PublishService extends repository_1.Repository {
         const videoInfo = PublishService.getVideoInfo(options.video);
         PublishService.publishDebug(`Publishing video to story: ${JSON.stringify(videoInfo)}`);
         const waterfallId = this.chance.guid({ version: 4 });
-        await Bluebird.try(() => this.regularVideo(Object.assign({ video: options.video, uploadId, forDirectStory: configureOptions.configure_mode === '2', waterfallId, forAlbum: true }, videoInfo))).catch(errors_1.IgResponseError, error => {
+        await Bluebird.try(() => this.regularVideo(Object.assign({ video: options.video, uploadId, forDirectStory: configureOptions.configure_mode === '2', waterfallId, forAlbum: true }, videoInfo))).catch(errors_1.IgResponseError, (error) => {
             throw new errors_1.IgConfigureVideoError(error.response, videoInfo);
         });
         await this.client.upload.photo({
@@ -409,11 +412,11 @@ class PublishService extends repository_1.Repository {
             source_type: '3',
             video: { length: videoInfo.duration / 1000.0 },
         })).catch(errors_1.IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay));
-        return Bluebird.try(() => this.client.media.configureToStoryVideo(Object.assign({ upload_id: uploadId, length: videoInfo.duration / 1000.0, width: videoInfo.width, height: videoInfo.height }, configureOptions))).catch(errors_1.IgResponseError, error => {
+        return Bluebird.try(() => this.client.media.configureToStoryVideo(Object.assign({ upload_id: uploadId, length: videoInfo.duration / 1000.0, width: videoInfo.width, height: videoInfo.height }, configureOptions))).catch(errors_1.IgResponseError, (error) => {
             throw new errors_1.IgConfigureVideoError(error.response, videoInfo);
         });
     }
 }
-exports.PublishService = PublishService;
 PublishService.publishDebug = (0, debug_1.default)('ig:publish');
+exports.PublishService = PublishService;
 //# sourceMappingURL=publish.service.js.map

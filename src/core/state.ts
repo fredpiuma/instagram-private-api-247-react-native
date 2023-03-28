@@ -1,8 +1,5 @@
 import * as _ from 'lodash';
-import * as Bluebird from 'bluebird';
-import * as Chance from 'chance';
-import { jar } from 'request';
-import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
+import Chance from 'chance';
 import * as devices from '../samples/devices.json';
 import * as builds from '../samples/builds.json';
 import * as supportedCapabilities from '../samples/supported-capabilities.json';
@@ -100,10 +97,6 @@ export class State {
   @Enumerable(false)
   proxyUrl: string;
   @Enumerable(false)
-  cookieStore = new MemoryCookieStore();
-  @Enumerable(false)
-  cookieJar = jar(this.cookieStore);
-  @Enumerable(false)
   checkpoint: CheckpointResponse | null = null;
   @Enumerable(false)
   challenge: ChallengeStateResponse | null = null;
@@ -169,12 +162,13 @@ export class State {
   }
 
   public get cookieCsrfToken() {
-    try {
-      return this.extractCookieValue('csrftoken');
-    } catch {
-      State.stateDebug('csrftoken lookup failed, returning "missing".');
-      return 'missing';
-    }
+    // try {
+    //   return this.extractCookieValue('csrftoken');
+    // } catch {
+    //   State.stateDebug('csrftoken lookup failed, returning "missing".');
+    //   return 'missing';
+    // }
+    return 'unset';
   }
 
   public get cookieUserId() {
@@ -191,25 +185,27 @@ export class State {
   }
 
   public get cookieUsername() {
-    return this.extractCookieValue('ds_user');
+    // return this.extractCookieValue('ds_user');
+    return null;
   }
 
   public isExperimentEnabled(experiment) {
     return this.experiments.includes(experiment);
   }
 
-  public extractCookie(key: string): Cookie | null {
-    const cookies = this.cookieJar.getCookies(this.constants.HOST);
-    return _.find(cookies, { key }) || null;
+  public extractCookie(key: string): any {
+    // const cookies = this.cookieJar.getCookies(this.constants.HOST);
+    // return _.find(cookies, { key }) || null;
   }
 
-  public extractCookieValue(key: string): string {
-    const cookie = this.extractCookie(key);
-    if (cookie === null) {
-      State.stateDebug(`Could not find ${key}`);
-      throw new IgCookieNotFoundError(key);
-    }
-    return cookie.value;
+  public extractCookieValue(key: string): string | any {
+    // const cookie = this.extractCookie(key);
+    // if (cookie === null) {
+    //   State.stateDebug(`Could not find ${key}`);
+    //   throw new IgCookieNotFoundError(key);
+    // }
+    // return cookie.value;
+    return null;
   }
 
   public extractUserId(): string {
@@ -223,12 +219,12 @@ export class State {
     }
   }
 
-  public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
-    this.cookieJar['_jar'] = await Bluebird.fromCallback(cb => CookieJar.deserialize(cookies, this.cookieStore, cb));
+  public async deserializeCookieJar(cookies: string | any) {
+    // this.cookieJar['_jar'] = await Bluebird.fromCallback((cb) => CookieJar.deserialize(cookies, this.cookieStore, cb));
   }
 
-  public async serializeCookieJar(): Promise<CookieJar.Serialized> {
-    return Bluebird.fromCallback(cb => this.cookieJar['_jar'].serialize(cb));
+  public async serializeCookieJar(): Promise<any> {
+    // return Bluebird.fromCallback((cb) => this.cookieJar['_jar'].serialize(cb));
   }
 
   public async serialize(): Promise<{ constants; cookies } & any> {

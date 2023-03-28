@@ -6,6 +6,6 @@ export declare class TimelineFeed extends Feed<TimelineFeedResponse, TimelineFee
     private nextMaxId;
     reason: TimelineFeedReason;
     set state(body: any);
-    request(options?: TimelineFeedsOptions): Promise<TimelineFeedResponse>;
-    items(): Promise<TimelineFeedResponseMedia_or_ad[]>;
+    request(options?: TimelineFeedsOptions): Promise<any>;
+    items(): Promise<any>;
 }

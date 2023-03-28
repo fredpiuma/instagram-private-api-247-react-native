@@ -14,7 +14,7 @@ const ig_client_error_1 = require("./ig-client.error");
 const decorators_1 = require("../decorators");
 class IgResponseError extends ig_client_error_1.IgClientError {
     constructor(response) {
-        super(`${response.request.method} ${response.request.uri.path} - ${response.statusCode} ${response.statusMessage}; ${response.body.message || ''}`);
+        super(`${response.request.method} ${response.request.uri.path} - ${response.status} ${response.statusText}; ${response.body.message || ''}`);
         this.response = response;
         if (response.body.message) {
             this.text = response.body.message;

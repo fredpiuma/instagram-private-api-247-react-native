@@ -7,5 +7,5 @@ export interface GraphQLRequestOptions {
     documentId: string;
     variables: any;
 }
-export declare type InsightsFriendlyName = 'IgInsightsAccountInsightsSurfaceQuery' | 'IgInsightsAccountInsightsWithTabsQuery' | 'IgInsightsPostGridSurfaceQuery' | 'IgInsightsPostInsightsQuery' | 'IgInsightsStoryInsightsAppQuery' | string;
-export declare type InsightsSurface = 'account' | 'post' | 'story' | string;
+export type InsightsFriendlyName = 'IgInsightsAccountInsightsSurfaceQuery' | 'IgInsightsAccountInsightsWithTabsQuery' | 'IgInsightsPostGridSurfaceQuery' | 'IgInsightsPostInsightsQuery' | 'IgInsightsStoryInsightsAppQuery' | string;
+export type InsightsSurface = 'account' | 'post' | 'story' | string;

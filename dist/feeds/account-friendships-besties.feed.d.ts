@@ -3,6 +3,6 @@ import { BestiesFeedResponse, BestiesFeedResponseUsersItem } from '../responses'
 export declare class BestiesFeed extends Feed<BestiesFeedResponse, BestiesFeedResponseUsersItem> {
     private nextMaxId;
     set state(body: BestiesFeedResponse);
-    request(): Promise<BestiesFeedResponse>;
-    items(): Promise<BestiesFeedResponseUsersItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

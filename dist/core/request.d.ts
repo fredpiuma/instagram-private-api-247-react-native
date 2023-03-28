@@ -1,10 +1,10 @@
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Subject } from 'rxjs';
 import { AttemptOptions } from '@lifeomic/attempt';
-import { Options } from 'request';
 import { IgApiClient } from './client';
 import { IgClientError } from '../errors';
 import { IgResponse } from '../types';
-declare type Payload = {
+type Payload = {
     [key: string]: any;
 } | string;
 interface SignedPost {
@@ -17,16 +17,16 @@ export declare class Request {
     end$: Subject<unknown>;
     error$: Subject<IgClientError>;
     attemptOptions: Partial<AttemptOptions<any>>;
-    defaults: Partial<Options>;
+    defaults: Partial<AxiosRequestConfig>;
     constructor(client: IgApiClient);
     private static requestTransform;
-    send<T = any>(userOptions: Options, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>>;
+    send<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>>;
     private updateState;
     signature(data: string): string;
     sign(payload: Payload): SignedPost;
     userBreadcrumb(size: number): string;
     private handleResponseError;
-    protected faultTolerantRequest(options: Options): Promise<any>;
+    protected faultTolerantRequest(options: AxiosRequestConfig): Promise<AxiosResponse>;
     getDefaultHeaders(): {
         'User-Agent': string;
         'X-Ads-Opt-Out': string;
@@ -43,7 +43,7 @@ export declare class Request {
         'X-IG-EU-DC-ENABLED': string;
         'X-IG-Extended-CDN-Thumbnail-Cache-Busting-Value': string;
         'X-Bloks-Version-Id': string;
-        'X-MID': string;
+        'X-MID': any;
         'X-IG-WWW-Claim': string;
         'X-Bloks-Is-Layout-RTL': string;
         'X-IG-Connection-Type': string;

@@ -1,5 +1,3 @@
-/// <reference types="request" />
-import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
 import * as Constants from './constants';
 import { ChallengeStateResponse, CheckpointResponse } from '../responses';
 declare const AUTHORIZATION_TAG: unique symbol;
@@ -50,8 +48,6 @@ export declare class State {
     adid: string;
     deviceId: string;
     proxyUrl: string;
-    cookieStore: MemoryCookieStore;
-    cookieJar: import("request").CookieJar;
     checkpoint: CheckpointResponse | null;
     challenge: ChallengeStateResponse | null;
     clientSessionIdLifetime: number;
@@ -71,14 +67,14 @@ export declare class State {
     get isCharging(): boolean;
     get challengeUrl(): string;
     get cookieCsrfToken(): string;
-    get cookieUserId(): string;
-    get cookieUsername(): string;
+    get cookieUserId(): any;
+    get cookieUsername(): any;
     isExperimentEnabled(experiment: any): boolean;
-    extractCookie(key: string): Cookie | null;
-    extractCookieValue(key: string): string;
+    extractCookie(key: string): any;
+    extractCookieValue(key: string): string | any;
     extractUserId(): string;
-    deserializeCookieJar(cookies: string | CookieJar.Serialized): Promise<void>;
-    serializeCookieJar(): Promise<CookieJar.Serialized>;
+    deserializeCookieJar(cookies: string | any): Promise<void>;
+    serializeCookieJar(): Promise<any>;
     serialize(): Promise<{
         constants: any;
         cookies: any;

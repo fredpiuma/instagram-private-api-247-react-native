@@ -8,6 +8,6 @@ export declare class AccountFollowersFeed extends Feed<AccountFollowersFeedRespo
     id: number | string;
     nextMaxId: string;
     set state(body: AccountFollowersFeedResponse);
-    request(): Promise<AccountFollowersFeedResponse>;
-    items(): Promise<AccountFollowersFeedResponseUsersItem[]>;
+    request(): Promise<any>;
+    items(): Promise<any>;
 }

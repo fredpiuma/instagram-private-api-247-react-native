@@ -8,12 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Feed = void 0;
 const rxjs_1 = require("rxjs");
 const class_transformer_1 = require("class-transformer");
 const attempt_1 = require("@lifeomic/attempt");
-const Chance = require("chance");
+const chance_1 = __importDefault(require("chance"));
 const errors_1 = require("../errors");
 const repository_1 = require("./repository");
 const decorators_1 = require("../decorators");
@@ -28,14 +31,14 @@ class Feed extends repository_1.Repository {
             maxDelay: 300000,
             jitter: true,
         };
-        this.chance = new Chance();
+        this.chance = new chance_1.default();
         this.rankToken = this.chance.guid();
     }
     get items$() {
         return this.observable();
     }
     observable(semaphore, attemptOptions) {
-        return new rxjs_1.Observable(observer => {
+        return new rxjs_1.Observable((observer) => {
             let subscribed = true;
             process.nextTick(async () => {
                 do {
@@ -48,7 +51,7 @@ class Feed extends repository_1.Repository {
                             }
                         }, Object.assign({ handleError(error, context) {
                                 if (error instanceof errors_1.IgResponseError &&
-                                    [400, 429, 500, 502].includes(error.response.statusCode) &&
+                                    [400, 429, 500, 502].includes(error.response.status) &&
                                     subscribed) {
                                     return;
                                 }
